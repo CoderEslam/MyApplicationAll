@@ -1,0 +1,620 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dist="http://schemas.android.com/apk/distribution"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.myapplication">
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the "MyLocation" functionality.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <dist:module dist:instant="true" />
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- Required only when requesting background location access on Android 10 (API level 29). -->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
+    <uses-permission android:name="android.permission.WRITE_CALL_LOG" />
+    <uses-permission android:name="android.permission.READ_PHONE_NUMBERS" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.MANAGE_OVERLAY_PERMISSION" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_CALL_LOG " />
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+    <uses-permission
+        android:name="android.permission.BIND_WALLPAPER"
+        tools:ignore="ProtectedPermissions" /> <!-- For SIP - START -->
+    <uses-feature android:name="android.software.sip.voip" />
+
+    <uses-permission android:name="android.permission.USE_SIP" /> <!-- For SIP - END -->
+    <uses-feature
+        android:name="android.software.live_wallpaper"
+        android:required="false" />
+    <uses-feature android:name="android.hardware.camera" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        tools:replace="android:icon">
+
+        <service android:name=".services.InCallServiceImplementation"
+            android:permission="android.permission.BIND_INCALL_SERVICE">
+            <meta-data android:name="android.telecom.IN_CALL_SERVICE_UI" android:value="true" />
+            <meta-data android:name="android.telecom.IN_CALL_SERVICE_RINGING"
+                android:value="true" />
+            <intent-filter>
+                <action android:name="android.telecom.InCallService"/>
+            </intent-filter>
+        </service>
+
+        <activity android:name=".InCallAppActivity">
+
+            <intent-filter>
+                <!-- Handle links from other applications -->
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.DIAL" />
+                <!-- Populate the system chooser -->
+                <category android:name="android.intent.category.DEFAULT" />
+                <!-- Handle links in browsers -->
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="tel" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.DIAL" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".MpAndroidChartActivity" />
+        <activity android:name=".AnyChartActivity" />
+        <activity android:name=".InterceptCallActivity" />
+
+        <receiver
+            android:name=".receivers.IncomingCallNonSIP"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+        </receiver> <!-- For Active Android - Start -->
+        <provider
+            android:name="com.activeandroid.content.ContentProvider"
+            android:authorities="com.example.myapplication"
+            android:enabled="true"
+            android:exported="false" />
+
+        <meta-data
+            android:name="AA_DB_NAME"
+            android:value="ActiveAndroid_DatabaseName" />
+        <meta-data
+            android:name="AA_DB_VERSION"
+            android:value="3" />
+        <meta-data
+            android:name="AA_MODELS"
+            android:value="com.example.myapplication.activeandroid.Item,com.example.myapplication.activeandroid.Category" /> <!-- For Active Android - END -->
+        <activity android:name=".ActiveAndroidActivity" /> <!-- For Active Android - END -->
+        <!-- for SIP - Start -->
+        <receiver
+            android:name=".receivers.IncomingCallReceiver"
+            android:label="Call Receiver" />
+
+        <activity android:name=".SIPActivity" /> <!-- for SIP - End -->
+        <activity android:name=".TelephonyActivity" />
+        <activity android:name=".RingToneActivity" />
+        <activity android:name=".InAppReviewActivity" />
+        <activity android:name=".ShowAllActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!-- Should be in LAUNCHER / First Activity -->
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+        </activity>
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity android:name=".MapsActivity" />
+
+        <service
+            android:name=".services.AppearOnTopService"
+            android:exported="false" />
+
+        <activity android:name=".AppearOnTopActivity" />
+        <activity android:name=".AskForAppearOnTopActivity" />
+        <activity android:name=".BackgroundLocationActivity" />
+        <activity android:name=".ShowDialogToChooseNumberActivity" />
+        <activity android:name=".Notification2Activity" />
+        <activity
+            android:name=".MyWallpaperPreferencesActivity"
+            android:exported="true"
+            android:label="Wallpaper Settings" />
+        <activity android:name=".LiveWallpaperActivity" />
+
+        <service
+            android:name=".services.MyWallpaperService"
+            android:enabled="true"
+            android:label="Wallpaper Example "
+            android:permission="android.permission.BIND_WALLPAPER">
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/wallpaper" />
+        </service>
+
+        <activity android:name=".WallpaperActivity" />
+        <activity android:name=".ExoPlayerActivity" />
+        <activity android:name=".CallPhoneAndDialSimpleVersionActivity" />
+        <activity android:name=".ChangeFragmentActivity" />
+        <activity android:name=".SensorActivity" />
+        <activity android:name=".GetCurrentPhoneNumberActivity" />
+        <activity android:name=".ReadWriteCallLogsActivity" />
+
+        <receiver
+            android:name=".receivers.ReceiveSMS"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.BROADCAST_SMS">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".ReadWriteSMSActivity" />
+        <activity android:name=".FileSaveReadDeleteActivity" />
+        <activity android:name=".SavePictureToGalleryActivity" />
+        <activity android:name=".MLKitObjectDetectionActivity" />
+        <activity android:name=".MLKitImageLabelActivity">
+            <meta-data
+                android:name="com.google.mlkit.vision.DEPENDENCIES"
+                android:value="ica" />
+        </activity>
+        <activity android:name=".CameraXActivity" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.myapplication.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <activity android:name=".CameraActivity" />
+        <activity android:name=".FirebaseInAppMessagingActivity" />
+        <activity android:name=".MLKitBarcodeScannerActivity">
+            <meta-data
+                android:name="com.google.mlkit.vision.DEPENDENCIES"
+                android:value="barcode" />
+        </activity>
+        <activity android:name=".MLKitDetectFaceActivity">
+            <meta-data
+                android:name="com.google.mlkit.vision.DEPENDENCIES"
+                android:value="face" />
+        </activity>
+        <activity android:name=".MLKitSmartReplyActivity" />
+        <activity android:name=".MLKitTranslateTextActivity" />
+        <activity android:name=".MLKitIdentifyLanguageActivity" />
+        <activity android:name=".MLTextRecognitionActivity">
+            <meta-data
+                android:name="com.google.mlkit.vision.DEPENDENCIES"
+                android:value="ocr" />
+        </activity>
+
+        <provider
+            android:name=".providers.StudentsProvider"
+            android:authorities="com.example.myapplication.StudentsProvider"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".ContentProviderActivity" />
+        <activity android:name=".TestBackOnFragmentActivity" />
+        <activity android:name=".TryBackButtonActivity4" />
+        <activity android:name=".TryBackButtonActivity3" />
+        <activity android:name=".TryBackButtonActivity2" />
+        <activity android:name=".TryBackButtonActivity" />
+        <!--
+         Set custom default icon. This is used when no icon is set for incoming notification messages.
+         See README(https://goo.gl/l4GJaQ) for more.
+        -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_launcher" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="1" />
+        <meta-data
+            android:name="firebase_messaging_auto_init_enabled"
+            android:value="true" />
+        <meta-data
+            android:name="firebase_analytics_collection_enabled"
+            android:value="true" />
+
+        <service
+            android:name=".services.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity android:name=".FirebaseCloudMessagingActivity" />
+        <activity android:name=".RemoteConfigActivity" />
+        <activity android:name=".FirebaseCrashlyticsActivity" />
+        <activity android:name=".FirebaseStorageActivity" />
+        <activity android:name=".FirestoreActivity" />
+        <activity android:name=".FirebaseRealTimeDatabaseActivity" />
+        <activity android:name=".FirebaseAuthUIActivity" />
+        <activity android:name=".FirebaseAnalyticsActivity" />
+        <activity android:name=".MotionTagActivity" />
+        <activity android:name=".RecordVideoActivity" />
+        <!--
+ Recommended for Android 9 (API level 28) and lower.
+        Required for Android 10 (API level 29) and higher.
+        -->
+        <service
+            android:name=".services.MyNavigationService"
+            android:enabled="true"
+            android:foregroundServiceType="location" />
+
+        <activity android:name=".LocationActivity" />
+        <activity android:name=".DragAndDropActivity" />
+        <activity android:name=".StyleOnViewActivity" />
+        <activity android:name=".GridLayoutActivity" />
+        <activity android:name=".BluetoothOnOrOffActivity" />
+        <activity android:name=".TableLayoutActivity" />
+        <activity android:name=".DatabaseActivity" />
+        <activity android:name=".CrossfadeActivity" />
+        <activity android:name=".ViewPager2Activity" />
+        <activity android:name=".ViewPagerActivity" />
+        <activity android:name=".AnimatorActivity" />
+        <activity android:name=".DetectGestureActivity" />
+        <activity android:name=".DeepLinkActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="www.example.com"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ImplicitIntentHandleActivity">
+
+            <!-- This activity handles "SEND" actions with text data -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".StartImplicitIntentActivity" />
+        <activity android:name=".AnimatorExampleActivity" />
+        <activity android:name=".ExampleAppWidgetConfig5">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <receiver android:name=".widget.ExampleAppWidgetProvider5">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/example_appwidget_info_5" />
+        </receiver>
+
+        <service
+            android:name=".widget.ExampleWidgetService5"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <activity android:name=".ExampleAppWidgetConfig4">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <receiver android:name=".widget.ExampleAppWidgetProvider4">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/example_appwidget_info_4" />
+        </receiver>
+
+        <service
+            android:name=".widget.ExampleWidgetService4"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <activity android:name=".ImplicitBroadcastSenderActivity" />
+        <activity android:name=".ImplicitBroadcastReceiverActivity" />
+        <activity android:name=".RegisterBroadcastActivity" />
+
+        <receiver android:name=".receivers.ExampleBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".services.ExampleIntentService" />
+
+        <activity android:name=".IntentServiceActivity" />
+
+        <receiver android:name=".receivers.AlertReceiver" />
+
+        <activity android:name=".AlarmManagerActivity" />
+
+        <service
+            android:name=".services.ExampleJobIntentService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <activity android:name=".JobIntentServiceActivity" />
+
+        <service
+            android:name=".services.ExampleJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <activity android:name=".JobSchedulerActivity" />
+        <activity android:name=".ThreadAndRunnableActivity" />
+        <activity android:name=".LooperThreadActivity" />
+        <activity android:name=".HandlerThreadActivity" />
+        <activity android:name=".AsyncTaskActivity" />
+        <activity android:name=".PostDelayedActivity" />
+
+        <receiver android:name=".widget.ExampleAppWidgetProvider3">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/example_appwidget_info_3" />
+        </receiver>
+
+        <activity android:name=".ExampleAppWidgetConfig2">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".WidgetResizeActivity"
+            android:launchMode="singleTop" />
+
+        <receiver android:name=".widget.ExampleAppWidgetProvider2">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/example_appwidget_info_2" />
+        </receiver>
+
+        <activity android:name=".ExampleAppWidgetConfig" />
+        <activity android:name=".WidgetActivity2" />
+        <activity
+            android:name=".WidgetActivity"
+            android:launchMode="singleTop" />
+
+        <receiver android:name=".widget.ExampleAppWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/example_appwidget_info" />
+        </receiver>
+
+        <activity android:name=".FlowingDrawerActivity" />
+        <activity
+            android:name=".NavigationDrawerActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".InsertNewContactActivity" />
+        <activity android:name=".GetAllContactActivity" />
+        <activity android:name=".RandomizedColorActivity" />
+        <activity android:name=".StyleableToastActivity" />
+        <activity android:name=".GSONSharedPreferencesActivity" />
+        <activity android:name=".AlerterActivity" />
+        <activity android:name=".ToastyActivity" />
+        <activity android:name=".BundleDataForActivity" />
+        <activity android:name=".DetailRecyclerViewWithPicassoActivity" />
+        <activity android:name=".RecyclerViewWithPicassoActivity" />
+        <activity android:name=".SharedViewModelActivity" />
+        <activity android:name=".SortingArrayActivity" />
+        <activity android:name=".CountDownTimerActivity" />
+        <activity android:name=".ChronometerActivity" />
+        <activity android:name=".CalendarAddActivity" />
+        <activity android:name=".ChooseColorActivity" />
+        <activity android:name=".BroadcastReceiverTimeTickActivity" />
+        <activity android:name=".KenBurnsViewActivity" />
+        <activity android:name=".VolleyActivity" />
+        <activity android:name=".OkHttpActivity" />
+        <activity android:name=".SaveTextFileActivity" />
+        <activity android:name=".RecyclerViewWithEditTextSearchActivity" />
+        <activity android:name=".RecyclerViewWithSearchViewActivity" />
+        <activity android:name=".RecyclerViewActivity2" />
+        <activity android:name=".SlideAnimationActivity2" />
+        <activity android:name=".SlideAnimationActivity" />
+        <activity android:name=".IntentAnimationActivity" />
+        <activity android:name=".HideKeyboardActivity" />
+        <activity android:name=".CircularLoadingBetterActivity" />
+        <activity android:name=".CircularProgressBarActivity" />
+        <activity android:name=".GSONActivity" />
+        <activity
+            android:name=".Slidr2Activity"
+            android:theme="@style/AppTheme.SlidrActivityTheme" />
+        <activity android:name=".SlidrActivity" />
+        <activity android:name=".ViewFlipperActivity" />
+        <activity android:name=".ColorSeekBarActivity" />
+        <activity android:name=".FragmentWithAnimationActivity" />
+        <activity android:name=".CreateFragmentWithDataActivity" />
+        <activity android:name=".SendDataBetweenFragmentsActivity" />
+        <activity android:name=".CustomSpinnerActivity" />
+        <activity android:name=".IncludeActivity" />
+        <activity android:name=".FadingRandomizedTextViewActivity" />
+        <activity android:name=".SpannableStringColorActivity" />
+        <activity android:name=".SpannableStringActivity" />
+        <activity android:name=".ClickableSpanActivity" />
+        <activity android:name=".ImeActivity" />
+        <activity android:name=".TextWatcherActivity" />
+        <activity android:name=".SpinnerCustomObjectActivity" />
+        <activity android:name=".SpinnerActivity" />
+        <activity android:name=".SeekBarActivity" />
+        <activity android:name=".DodgeInsetEdgesActivity" />
+        <activity android:name=".BottomSheetActivity" />
+        <activity android:name=".PicassoImageSliderActivity" />
+        <activity android:name=".ImageSliderActivity" />
+        <activity android:name=".MultiAutoCompleteTextViewActivity" />
+        <activity android:name=".YoyoActivity" />
+        <activity android:name=".CustomButtonActivity" />
+        <activity android:name=".CircularRevealActivity" />
+        <activity android:name=".AnimationDrawableActivity" />
+        <activity android:name=".TextInputLayoutActivity" />
+        <activity android:name=".CustomAutoCompleteTextViewActivity" />
+        <activity android:name=".AutoCompleteTextViewActivity" />
+        <activity android:name=".SharedElementActivity2" />
+        <activity android:name=".SharedElementActivity" />
+        <activity android:name=".ModalBottomActivity" />
+        <activity android:name=".PressBackAndRateMeActivity" />
+        <activity android:name=".GradientActivity" />
+
+        <service android:name=".ExampleService" />
+
+        <activity android:name=".ServiceActivity" />
+        <activity android:name=".PlayMusicTwoActivity" />
+        <activity android:name=".GoogleSignInActivity" />
+        <activity android:name=".GetMetaDataActivity" />
+        <activity android:name=".StringFormatterActivity" />
+        <activity android:name=".ColorStateActivity" />
+        <activity android:name=".AnimationActivity" />
+        <activity
+            android:name=".ConfigurationChangedActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
+        <activity android:name=".ScanQRActivity" />
+        <activity android:name=".NavigationBottomActivity" />
+        <activity android:name=".ViewModelActivity" />
+        <activity
+            android:name=".TabbedActivity"
+            android:label="@string/title_activity_tabbed"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".SwipeRefreshLayoutActivity" />
+        <activity android:name=".RecyclerViewActivity" />
+        <activity android:name=".SpringFloatingActionMenuActivity" />
+        <activity android:name=".GridViewActivity" />
+        <activity android:name=".AppIntroActivity" />
+        <activity android:name=".CirclePageIndicatorActivity" />
+        <activity android:name=".DialogActivity" />
+        <activity android:name=".MenuContextActivity" />
+        <activity android:name=".PickTimeAndDateActivity" /> <!-- for PhotoActivity -->
+        <activity android:name=".PhotoActivity" />
+        <activity android:name=".RecordVoicePlayVoiceActivity" />
+        <activity android:name=".TextToSpeechActivity" />
+        <activity android:name=".ShowModalBottomActivity" />
+        <activity android:name=".FingerprintActivity" />
+        <activity android:name=".SettingActivity" />
+        <activity android:name=".FragmentsActivity" />
+        <activity
+            android:name=".AppBarActivity"
+            android:parentActivityName=".ThirdActivity" />
+        <activity android:name=".SnackbarActivity" />
+        <activity android:name=".CopyPasteActivity" />
+        <activity
+            android:name=".PictureInPictureActivity"
+            android:launchMode="singleTask"
+            android:supportsPictureInPicture="true" />
+        <activity android:name=".WebViewActivity" />
+        <activity android:name=".SetBroadcastContextActivity" />
+
+        <receiver
+            android:name=".MyBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.SCREEN_ON" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".PinnedShortcutActivity">
+
+            <!-- Should be in LAUNCHER / First Activity -->
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+        </activity>
+        <activity android:name=".ThirdActivity" />
+        <activity android:name=".ReceiveTextActivity" />
+        <activity android:name=".VibrateActivity" />
+        <activity android:name=".TryIntentsActivity" />
+        <activity android:name=".SecondaryActivity" />
+        <activity android:name=".SaveDataToExternalStorageActivity" />
+        <activity android:name=".PlayMusicActivity" />
+        <activity android:name=".NotificationActivity" />
+        <activity android:name=".JsonActivity" />
+        <activity android:name=".GoToOtherActivity" />
+        <activity android:name=".GetStringActivity" />
+        <activity android:name=".GetSetPreferencesActivity" />
+        <activity android:name=".GetLocationDataActivity" />
+        <activity android:name=".firstActivity" />
+        <activity
+            android:name=".BubbleActivity"
+            android:allowEmbedded="true"
+            android:resizeableActivity="true" />
+    </application>
+
+</manifest>
